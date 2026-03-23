@@ -22,6 +22,7 @@ dependencies = [
     "scipy>=1.17.1",
     "seaborn>=0.13.2",
     "spacy>=3.8.11",
+    "stanza>=1.11.1",
     "textparser>=0.24.0",
     "tqdm>=4.67.3",
 ]
