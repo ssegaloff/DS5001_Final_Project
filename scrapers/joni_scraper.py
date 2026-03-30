@@ -226,9 +226,11 @@ def build_joni_corpus(discography_url, headers):
     else:
         # level 1: get album urls
         albums = get_album_urls(discography_url, headers)
+        total_albums = len(albums)
 
         # to test on a subset, replace albums with albums[:2] or however many you want to test on
-        for album in albums:
+        for i, album in enumerate(albums, start=1):
+            print(f"\nAlbum {i} of {total_albums}:")
             # level 2: get song urls by iterating through albums
             songs = get_album_tracks(album, headers)
 
