@@ -15,6 +15,7 @@ import os
 import time
 
 import pandas as pd
+import json
 import requests
 from bs4 import BeautifulSoup
 
@@ -73,7 +74,6 @@ def get_album_urls(discography_url, headers, base_url='https://jonimitchell.com'
             release_date = date_tag.text.replace('Released ', '').strip()
         else:
             release_date = 'Unknown Date'
-
         # bind the info together into a single record
         album_record = {
             'album_url': full_url,
@@ -96,7 +96,7 @@ def get_album_tracks(album_record, headers, base_url='https://jonimitchell.com/m
     print(f"  -> Digging into album: {album_record['album_title']}...")
 
     r = requests.get(album_url, headers=headers)
-    time.sleep(2) # be polite to server and wait a few seconds before the next request
+    time.sleep(3) # be polite to server and wait a few seconds before the next request
     
     if r.status_code != 200:
         print(f"  Warning: Received status code {r.status_code} for album page.")
@@ -208,7 +208,7 @@ def get_song_lyrics(song_record, headers):
 
 # ======= Corpus Builder =======
 
-def build_joni_corpus(discography_url, headers, base_url='https://jonimitchell.com'):
+def build_joni_corpus(discography_url, headers):
     """
     Orchestrates the 3-level extraction pipeline and transforms the
     resulting data into an OHCO-formatted pandas DataFrame.
@@ -216,20 +216,37 @@ def build_joni_corpus(discography_url, headers, base_url='https://jonimitchell.c
     print("Starting corpus build process...\n")
     final_corpus = []
 
-    # level 1: get album urls
-    albums = get_album_urls(discography_url, headers, base_url)
+    # skip scraping and go straight to OHCO transformation if raw JSON data already exists
+    raw_path = 'data/raw/joni_mitchell_raw.json'
+    if os.path.exists(raw_path):
+        print("Raw JSON found, skipping scraping...")
+        with open(raw_path, 'r') as f:
+            final_corpus = json.load(f)
 
-    # optional albums = albums[:2] # for testing, limit to first 2 albums
-    for album in albums:
-        # level 2: get song urls by iterating through albums
-        songs = get_album_tracks(album, headers, base_url + '/music/')
+    else:
+        # level 1: get album urls
+        albums = get_album_urls(discography_url, headers)
 
-        for song in songs:
-            # level 3: get lyrics and metadata for each song
-            complete_record = get_song_lyrics(song, headers)
-            final_corpus.append(complete_record)
+        # to test on a subset, replace albums with albums[:2] or however many you want to test on
+        for album in albums:
+            # level 2: get song urls by iterating through albums
+            songs = get_album_tracks(album, headers)
 
-    print("\nExtraction complete! Restructuring into OHCO format...")
+            for song in songs:
+                # level 3: get lyrics and metadata for each song
+                complete_record = get_song_lyrics(song, headers)
+                final_corpus.append(complete_record)
+
+        print("\nExtraction complete!")
+
+        # save the raw extracted corpus as JSON for posterity
+        os.makedirs("data/raw", exist_ok=True)
+        with open('data/raw/joni_mitchell_raw.json', 'w') as f:
+            json.dump(final_corpus, f, indent=2)
+
+        print("Raw corpus saved to data/raw/joni_mitchell_raw.json")
+
+    print("\nStarting OHCO transformation...")
 
     # OHCO transformation
     df = pd.DataFrame(final_corpus)
@@ -282,10 +299,10 @@ def build_joni_corpus(discography_url, headers, base_url='https://jonimitchell.c
 
 if __name__ == "__main__":
     # ensure a directory exists for the outputs
-    os.makedirs('processed_data', exist_ok=True)
+    os.makedirs('data/processed', exist_ok=True)
 
     # run pipeline
-    CORPUS, TOKENS = build_joni_corpus(DISCOGRAPHY_URL, HEADERS, BASE_URL)
+    CORPUS, TOKENS = build_joni_corpus(DISCOGRAPHY_URL, HEADERS)
     
     # LIB table (unique metadata per album)
     LIB = (
@@ -302,9 +319,9 @@ if __name__ == "__main__":
 
 
     # Save outputs
-    LIB.to_csv('processed_data/joni_mitchell_LIB.csv')
-    CORPUS.to_csv('processed_data/joni_mitchell_CORPUS.csv')
-    TOKENS.to_csv('processed_data/joni_mitchell_TOKENS.csv')
+    LIB.to_csv('data/processed/joni_mitchell_LIB.csv')
+    CORPUS.to_csv('data/processed/joni_mitchell_CORPUS.csv')
+    TOKENS.to_csv('data/processed/joni_mitchell_TOKENS.csv')
 
     print("\nSaved: joni_mitchell_LIB.csv, joni_mitchell_CORPUS.csv, joni_mitchell_TOKENS.csv")
 
