@@ -2944,6 +2944,8 @@ dependencies = [
     { name = "bs4" },
     { name = "dotenv" },
     { name = "gensim" },
+    { name = "ipython" },
+    { name = "ipywidgets" },
     { name = "jupyter" },
     { name = "lyricsgenius" },
     { name = "matplotlib" },
@@ -2962,8 +2964,10 @@ dependencies = [
     { name = "sentence-transformers" },
     { name = "spacy" },
     { name = "stanza" },
+    { name = "textblob" },
     { name = "textparser" },
     { name = "tqdm" },
+    { name = "transformers" },
 ]
 
 [package.metadata]
@@ -2972,6 +2976,8 @@ requires-dist = [
     { name = "bs4", specifier = ">=0.0.2" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "gensim", specifier = ">=4.4.0" },
+    { name = "ipython", specifier = ">=9.11.0" },
+    { name = "ipywidgets", specifier = ">=8.1.8" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "lyricsgenius", specifier = ">=3.11.0" },
     { name = "matplotlib", specifier = ">=3.10.8" },
@@ -2990,8 +2996,22 @@ requires-dist = [
     { name = "sentence-transformers", specifier = ">=5.3.0" },
     { name = "spacy", specifier = ">=3.8.11" },
     { name = "stanza", specifier = ">=1.11.1" },
+    { name = "textblob", specifier = ">=0.20.0" },
     { name = "textparser", specifier = ">=0.24.0" },
     { name = "tqdm", specifier = ">=4.67.3" },
+    { name = "transformers", specifier = ">=5.4.0" },
+]
+
+[[package]]
+name = "textblob"
+version = "0.20.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nltk" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8b/c0/b7f426679211e965f8bf6b65e5eafeda51842502a6ae989b9616895d5fb5/textblob-0.20.0.tar.gz", hash = "sha256:ae9bef3a16cecb4aae3e995cc8c6fe98a9d2a6ffdd58990dcd68e817e8d66b9e", size = 639377, upload-time = "2026-04-01T13:50:20.975Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b9/6e/d487f271c30700354f55b5e56339f38942ab3cb9b6f1464288e252ae3fef/textblob-0.20.0-py3-none-any.whl", hash = "sha256:f32e5240a17a98a8d026cdf7add8f5e0c7d4f1f2e91dad77bc9493e5ab3c6bd5", size = 624962, upload-time = "2026-04-01T13:50:19.423Z" },
 ]
 
 [[package]]
