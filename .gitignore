@@ -30,6 +30,7 @@ data/
 datasets/
 dataset/
 images/
+raw_data/
 
 # PyTorch model weights and checkpoints
 *.pt
