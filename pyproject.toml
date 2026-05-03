@@ -12,6 +12,7 @@ dependencies = [
     "ipython>=9.11.0",
     "ipywidgets>=8.1.8",
     "jupyter>=1.1.1",
+    "kaleido>=1.2.0",
     "lxml>=6.0.2",
     "lyricsgenius>=3.11.0",
     "matplotlib>=3.10.8",
